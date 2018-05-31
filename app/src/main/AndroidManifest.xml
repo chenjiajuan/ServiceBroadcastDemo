@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".aidl.CountAidlActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +22,13 @@
         <!--<action android:name="com.cjj.kotlindemo.Counter_Receiver"></action>-->
         <!--</intent-filter>-->
         <!--</service>-->
-        <service android:name="com.chenjiajuan.servicebroadcatdemo.other.CountService" android:enabled="true">
+        <service android:name="com.chenjiajuan.servicebroadcatdemo.CountService"
+            android:enabled="true"
+            android:process=":remote1"
+            >
+            <intent-filter>
+                <action android:name="com.chenjiajuan.servicebroadcat.CountAidlService"></action>
+            </intent-filter>
         </service>
     </application>
 

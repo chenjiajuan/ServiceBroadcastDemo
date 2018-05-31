@@ -1,4 +1,4 @@
-package com.chenjiajuan.servicebroadcatdemo.other
+package com.chenjiajuan.servicebroadcatdemo
 
 import android.app.Activity
 import android.content.*
@@ -6,7 +6,6 @@ import android.os.*
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-import com.chenjiajuan.servicebroadcatdemo.R
 import java.util.*
 
 /**
@@ -19,12 +18,13 @@ class CountActivity : Activity() {
     private var tvUnBindMode:TextView?=null
     private var tvStartMode:TextView?=null
     private var tvStopService:TextView?=null
-    private var counterReceiver:CounterReceiver ?=null
+    private var counterReceiver: CounterReceiver?=null
     private var serviceIntent:Intent?=null
     private var serviceBinder: CountService.CountBinder?=null
-    private var countService:CountService?=null
+    private var countService: CountService?=null
     private var timer:Timer?=null
     private var timerTask:TimerTask?=null
+    private var unBinde:Boolean=false
 
     enum class StartType{
         TYPE_BIND,
@@ -75,21 +75,23 @@ class CountActivity : Activity() {
 
     }
 
-    private fun  bindService(view:View){
+
+     fun  bindService(view:View?){
         definedBindService()
     }
 
-    private fun unBindService(view: View){
+     fun unBindService(view: View?){
         unBindService()
 
     }
 
-    private fun  startService(view: View){
+     fun  startService(view: View?){
         definedStartService()
     }
 
-    private fun  stopService(view: View){
+     fun  stopService(view: View?){
         stopService(serviceIntent)
+         cancelTimer()
     }
 
 
@@ -98,12 +100,18 @@ class CountActivity : Activity() {
      */
     private  fun definedBindService(){
         // onCreate  -> onBind  -> onServiceConnected
-        serviceIntent!!.putExtra("type",StartType.TYPE_BIND)
+        serviceIntent!!.putExtra("type", StartType.TYPE_BIND)
         bindService(serviceIntent,serviceConnection,Context.BIND_AUTO_CREATE)
     }
 
     private fun  unBindService(){
-        unbindService(serviceConnection)
+        if (!unBinde){
+            //IllegalArgumentException: Service not registered:
+            unbindService(serviceConnection)
+            cancelTimer()
+            unBinde=!unBinde
+        }
+
     }
 
 
@@ -111,9 +119,7 @@ class CountActivity : Activity() {
        timer=Timer()
        timerTask=object :TimerTask(){
            override fun run() {
-               Log.e("TAG","timer run")
                var  count=countService?.getCount().toString()
-               Log.e("TAG", "run : count : "+count)
                var massage=Message()
                massage.obj=count
                countHandler.sendMessage(massage)
@@ -128,7 +134,7 @@ class CountActivity : Activity() {
      */
     private fun  definedStartService(){
         // onCreate  -> onStartCommand
-        serviceIntent!!.putExtra("type",StartType.TYPE_START)
+        serviceIntent!!.putExtra("type", StartType.TYPE_START)
         startService(serviceIntent)
     }
 
@@ -158,14 +164,22 @@ class CountActivity : Activity() {
         //unregisterReceiver(counterReceiver)
         unBindService()
         stopService(serviceIntent)
-        timerTask!!.cancel()
-        timer!!.cancel()
-        timerTask=null
-        timer=null
+        cancelTimer()
 
         Log.e("TAG","onDestroy")
 
+    }
 
+    private fun cancelTimer(){
+        if (timerTask!=null){
+            timerTask!!.cancel()
+            timerTask=null
+
+        }
+        if (timer!=null){
+            timer!!.cancel()
+            timer=null
+        }
 
     }
 

@@ -13,6 +13,9 @@
         android:gravity="center"
         android:textColor="@color/color_f0b0b0b"
         android:onClick="bindService"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/btn_selector"
         />
 
     <TextView
@@ -23,6 +26,9 @@
         android:layout_gravity="center"
         android:textColor="@color/color_f0b0b0b"
         android:onClick="unBindService"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/btn_selector"
         />
 
     <TextView
@@ -34,6 +40,9 @@
         android:gravity="center"
         android:textColor="@color/color_f0b0b0b"
         android:onClick="startService"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/btn_selector"
         />
     <TextView
         android:id="@+id/tvStopService"
@@ -44,6 +53,9 @@
         android:gravity="center"
         android:textColor="@color/color_f0b0b0b"
         android:onClick="stopService"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/btn_selector"
         />
     <TextView
         android:id="@+id/tvCount"

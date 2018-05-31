@@ -1,4 +1,4 @@
-package com.chenjiajuan.servicebroadcatdemo.other
+package com.chenjiajuan.servicebroadcatdemo
 
 import android.app.Service
 import android.content.Intent
@@ -71,7 +71,7 @@ class CountService :Service() {
     }
 
      inner  class CountBinder: Binder() {
-        open fun  getService ():CountService {
+        open fun  getService (): CountService {
             return this@CountService
         }
     }
