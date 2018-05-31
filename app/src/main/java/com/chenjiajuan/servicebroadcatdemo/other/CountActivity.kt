@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.*
 import android.os.*
 import android.util.Log
+import android.view.View
 import android.widget.TextView
+import com.chenjiajuan.servicebroadcatdemo.R
 import java.util.*
 
 /**
@@ -13,12 +15,25 @@ import java.util.*
 class CountActivity : Activity() {
     private var TAG:String="CountActivity"
     private var tvCount:TextView?=null
+    private var tvBindMode:TextView?=null
+    private var tvUnBindMode:TextView?=null
+    private var tvStartMode:TextView?=null
+    private var tvStopService:TextView?=null
     private var counterReceiver:CounterReceiver ?=null
     private var serviceIntent:Intent?=null
     private var serviceBinder: CountService.CountBinder?=null
     private var countService:CountService?=null
     private var timer:Timer?=null
     private var timerTask:TimerTask?=null
+
+    enum class StartType{
+        TYPE_BIND,
+        TYPE_UNBIND,
+        TYPE_START,
+        TYPE_STOP
+    }
+
+
     private var serviceConnection:ServiceConnection=object:ServiceConnection{
         override fun onServiceDisconnected(name: ComponentName?) {
             Log.e(TAG,"onServiceDisconnected")
@@ -45,24 +60,45 @@ class CountActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_count)
         tvCount=findViewById(R.id.tvCount)
-        //启动service
+        tvBindMode=findViewById(R.id.tvBindMode)
+        tvUnBindMode=findViewById(R.id.tvUnBindMode)
+        tvStartMode=findViewById(R.id.tvStartMode)
+        tvStopService=findViewById(R.id.tvStopService)
+         //启动service
         serviceIntent=Intent(this, CountService::class.java)
 
-        definedBindService()
         //定义启动方式
        // definedStartService()
 
         //定义注册广播接收器，接收更新值
         //definedBroadcastReceiver()
 
+    }
+
+    private fun  bindService(view:View){
+        definedBindService()
+    }
+
+    private fun unBindService(view: View){
+        unBindService()
 
     }
+
+    private fun  startService(view: View){
+        definedStartService()
+    }
+
+    private fun  stopService(view: View){
+        stopService(serviceIntent)
+    }
+
 
     /**
      * 采用bind方式启动service
      */
     private  fun definedBindService(){
         // onCreate  -> onBind  -> onServiceConnected
+        serviceIntent!!.putExtra("type",StartType.TYPE_BIND)
         bindService(serviceIntent,serviceConnection,Context.BIND_AUTO_CREATE)
     }
 
@@ -92,6 +128,7 @@ class CountActivity : Activity() {
      */
     private fun  definedStartService(){
         // onCreate  -> onStartCommand
+        serviceIntent!!.putExtra("type",StartType.TYPE_START)
         startService(serviceIntent)
     }
 

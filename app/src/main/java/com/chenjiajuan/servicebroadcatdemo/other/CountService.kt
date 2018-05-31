@@ -28,8 +28,7 @@ class CountService :Service() {
     }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e(TAG,"onStartCommand")
-        //startRunCount()
-
+        startRunCount()
         return START_STICKY
     }
 
